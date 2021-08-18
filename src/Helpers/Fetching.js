@@ -12,6 +12,8 @@ export const doFetch = async (fetchUrl, fetchMethod = 'GET', fetchData = null, f
 
     if(data.items) {
         return data.items
+    } else if(data.item) {
+        return data.item
     } else {
         return data
     }

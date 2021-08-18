@@ -15,20 +15,42 @@ main {
 
 .divided_content {
   display: grid;
-  grid-template: auto / 70% auto;
-  grid-template-areas: 'section aside';
-  padding: 50px 70px;
+  grid-template: auto auto / 100%;
+  grid-template-areas: 'section' 'aside';
+  padding: 30px 30px;
   width: 100%;
   min-height: 90vh;
 }
 
+@media (min-width: 1200px) {
+  .divided_content {
+    display: grid;
+    grid-template: auto / 70% auto;
+    grid-template-areas: 'section aside';
+    padding: 50px 70px;
+    width: 100%;
+    min-height: 90vh;
+  }
+}
+
+
 .section {
   grid-area: section;
-  border-right: 1px solid gray;
+  border-right: none;
+  border-bottom: 1px solid gray;
   padding: 0 10px;
+}
+
+@media (min-width: 1200px) {
+  .section {
+    grid-area: section;
+    border-right: 1px solid gray;
+    border-bottom: none;
+    padding: 0 20px;
+  }
 }
 
 .aside {
   grid-area: aside;
-  padding: 0 10px;
+  padding: 0 20px;
 }

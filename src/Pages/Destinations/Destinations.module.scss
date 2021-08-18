@@ -1,3 +1,5 @@
+$laptop: 1200px;
+
 .destinations_hero {
     width: 100%;
     height: 40vh;
@@ -6,6 +8,26 @@
 
 .destinations_filter {
     width: 100%;
-    background-color: green;
     height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-bottom: 1px solid #CFCFCF;
+
+    @media (min-width: $laptop) {
+        flex-direction: row;
+    }
+
+    .destinations_filterItem {
+        margin: 0 2.5px;
+        text-decoration: none;
+        color: black;
+        font-size: .8rem;
+
+        @media (min-width: $laptop) {
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+    }
 }

@@ -5,7 +5,9 @@ const LoginInformation = () => {
 
     const getInformation = () => {
         const information = JSON.parse(sessionStorage.getItem('token'))
-        setUsername(information.username)
+        if(information) {
+            setUsername(information.username)
+        }
     }
 
 

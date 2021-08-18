@@ -1,70 +1,64 @@
 $laptop: 1200px;
 
-.showcaseList {
-    width: 100%;
-    height: fit-content;
-    padding: 30px 30px;
+.showcaseCitys {
+    min-height: 90vh;
+    padding-bottom: 20px;
 
     @media (min-width: $laptop) {
-        padding: 20px 80px;
+        padding-bottom: 20px;
     }
-    
-    .showcaseList_article {
-        padding: 20px 0;
-        width: 100%;
+
+    .showcaseCitys_h2 {
+        margin-bottom: 10px;
+    }
+    .showcaseCitys_subHeader {
+        margin-bottom: 20px;
+    }
+
+    .showcaseCitys_article {
         height: fit-content;
+
         display: flex;
         flex-direction: row;
-        display: flex;
-        flex-direction: column;
         justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 30px;
 
-        @media (min-width: $laptop) {
-            height: 35vh;
-            padding: 10px 0;
-            flex-direction: row;
-        }
-
-        .showcaseList_figure {
+        .showcaseCitys_figure {
             width: 100%;
-            height: 40vh;
+            height: 35vh;
             overflow: hidden;
             position: relative;
             box-shadow: 5px 5px 10px #00000050;
-            margin: 30px 0;
-
-            &:first-child, &:last-child {
-                margin: unset;
-            }
 
             @media (min-width: $laptop) {
-                width: 30%;
-                height: 100%;
-                margin: unset;
+                width: 47%;
+                height: 35vh;
             }
 
             &:hover {
                 cursor: pointer;
 
-                .showcaseList_figcaption {
+                .showcaseCitys_figcaption {
                     height: 50%;
                     transition: .5s ease;
 
-                    .showcaseList_p {
+                    .showcaseCitys_p {
                         display: flex;
                         color: black;
                     }
                 }
             }
 
-            .showcaseList_img {
+            .showcaseCitys_img {
                 width: 100%;
                 position: absolute;
                 top: 0;
                 left: 0;
             }
-    
-            .showcaseList_figcaption {
+
+            .showcaseCitys_figcaption {
                 z-index: 1;
                 height: 32%;
                 width: 100%;
@@ -74,7 +68,7 @@ $laptop: 1200px;
                 background-color: white;
                 padding: 10px;
 
-                .showcaseList_p {
+                .showcaseCitys_p {
                     display: none;
                     margin-top: 0px;
                 }

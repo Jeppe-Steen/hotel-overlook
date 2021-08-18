@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-dom';
 
 import Frontpage from './Pages/Frontpage/Frontpage';
 import Destinations from './Pages/Destinations/Destinations';
@@ -14,28 +14,40 @@ function App() {
       <Router>
         <Navigation />
 
-        <Route exact path="/forside">
-          <Frontpage />
-        </Route>
-        <Route exact path="/destinationer">
-          <Destinations />
-        </Route>
-        <Route exact path="/reservation">
-          <Reservation />
-        </Route>
-        <Route exact path="/værelser">
-          <Reservation />
-        </Route>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/admin">
-          {/* tilføj admin side */}
-        </Route>
+        <Switch>
+          <Route exact path="/forside">
+            <Frontpage />
+          </Route>
 
-        <Route path="/">
-          <Redirect to="/forside"/>
-        </Route>
+          <Route path="/destinationer">
+            <Destinations />
+          </Route>
+
+
+          <Route exact path="/reservation">
+            <Reservation />
+          </Route>
+
+          <Route exact path="/værelser">
+            <Reservation />
+          </Route>
+
+          <Route exact path="/login">
+            <Login />
+          </Route>
+
+          <Route exact path="/admin">
+            <p>du er nu logged ind</p>
+          </Route>
+
+          <Route exact path="/">
+            <Redirect to="/forside"/>
+          </Route>
+
+          <Route path="/">
+            <p>denne side findes ikke</p>
+          </Route>
+        </Switch>
 
         <Footer />
       </Router>
