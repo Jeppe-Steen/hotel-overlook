@@ -2,9 +2,11 @@ import Style from './LoginForm.module.scss';
 
 import { doFetch } from '../../Helpers/Fetching';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 
 const LoginForm = () => {
     const [message, setMessage] = useState('');
+    const history = useHistory();
 
     let loginData = {
         username: '',
@@ -35,6 +37,7 @@ const LoginForm = () => {
         if(!data.message) {
             sessionStorage.setItem('token', JSON.stringify(data));
             setMessage('Du er nu logget Ind')
+            history.push('/admin')
         }
 
         if (data.message === 'No authorization') {

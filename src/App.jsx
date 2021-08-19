@@ -8,7 +8,9 @@ import Login from './Pages/Login/Login';
 
 import Navigation from './Components/Navigation/Navigation';
 import Footer from './Components/Footer/Footer';
+import Admin from './Pages/Admin/Admin';
 function App() {
+
   return (
     <div className="App">
       <Router>
@@ -37,7 +39,7 @@ function App() {
           </Route>
 
           <Route exact path="/admin">
-            <p>du er nu logged ind</p>
+            <Admin />
           </Route>
 
           <Route exact path="/">

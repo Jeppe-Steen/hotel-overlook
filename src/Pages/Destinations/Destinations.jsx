@@ -44,7 +44,6 @@ const Destinations = () => {
                         <Route exact path={`${url}/:landId/:cityId`}>
                             <ShowcaseHotels titel={'hey'} />
                             <aside className="aside">
-                                <p>this is a aside</p>
                             </aside>
                         </Route>
                     </Switch>

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import LoginForm from "../../Components/LoginForm/LoginForm";
-import LoginInformation from '../../Components/LoginInformation/LoginInformation';
 
 const Login = () => {
 
@@ -26,8 +25,6 @@ const Login = () => {
                     <LoginForm />
                 </section>
                 <aside className="aside">
-                    {/* skal rykkes over på admin siden */}
-                    <LoginInformation />
                 </aside>
             </div>
         </main>
