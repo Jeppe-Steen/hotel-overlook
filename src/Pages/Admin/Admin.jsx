@@ -15,6 +15,14 @@ const Admin = () => {
         setReservationsList(fetchedData);
     } 
 
+    const deleteResevation = async (res_id) => {
+        const userData = JSON.parse(sessionStorage.getItem('token'));
+        const url = `https://api.mediehuset.net/overlook/reservations/${res_id}`;
+        const fetchedData = await doFetch(url, 'DELETE', null, userData.access_token);
+
+        fetchingData();
+
+    }
 
     useEffect(() => {
         fetchingData();
@@ -35,15 +43,15 @@ const Admin = () => {
                             <p>Dato</p>
                             <p>Handling</p>
                         </header>
-                        {reservationsList && reservationsList.map((item, index) => {
+                        {reservationsList.length ? reservationsList.map((item, index) => {
                             return (
-                                <div className={Style.admin_div}>
+                                <div key={index} className={Style.admin_div}>
                                     <p>{item.hotel_title} - {item.room_title}</p>
                                     <p>{item.checkin_date} - {item.checkin_date}</p>
-                                    <p>Slet</p>
+                                    <p onClick={() => {deleteResevation(item.id)}}>Slet</p>
                                 </div>
                             )
-                        })}
+                        }) : <div className={Style.admin_div}><p>Der er ikke lavet nogen reservationer</p></div>}
                     </article>
                 </section>
                 <aside className="aside">
