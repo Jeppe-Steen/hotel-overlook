@@ -25,7 +25,6 @@ function App() {
             <Destinations />
           </Route>
 
-
           <Route exact path="/reservation">
             <Reservation />
           </Route>
