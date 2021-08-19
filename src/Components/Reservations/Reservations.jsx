@@ -3,9 +3,16 @@ import { useEffect } from 'react/cjs/react.development';
 import Style from './Reservations.module.scss';
 
 import { doFetch }from '../../Helpers/Fetching';
+import { useState } from 'react';
 
 const Reservations = () => {
 
+    const [hotelSelect, setHotelSelect] = useState([]);
+
+    // array of options for the first select
+    let hotelsArray = [];
+
+    // reservation data
     const reservationData = {
         userId: null,
         destination: '',
@@ -22,32 +29,68 @@ const Reservations = () => {
         accept: false,
     }
 
+    // user data which is stored in sessionStorage
     const userData = JSON.parse(sessionStorage.getItem('token'));
 
+    // redirects the user to the login page
     const history = useHistory();
-
     const getUserData = () => {
         if(!userData) {
             history.push('/login')
         }
     }
 
+    // converts the selected dates to timestamps
     const convertToTimestamp = (val) => {
         const timestamp = Date.parse(val)
         return timestamp / 1000;
     }
 
+    // gets every city in denmark which has hotels, and then gets every hotel in that city
+    // needs to be convertet to countrys also
+    const getSelectOptions = async () => {
+        const url_city = `https://api.mediehuset.net/overlook/cities/by_country/${1}`;
+
+        const response_city = await doFetch(url_city);
+
+        for(let city of response_city) {
+            const getHotels = async () => {
+                const url_hotel = `https://api.mediehuset.net/overlook/hotels/by_city/${city.id}`;
+                const response_hotel = await doFetch(url_hotel);
+
+                for(let hotel of response_hotel) {
+                    let obj = { print: `${city.name} - ${hotel.title}`, val: hotel.id }
+                
+                    hotelsArray.push(obj);
+                }
+            };
+
+            getHotels();
+        }
+    }
+
+    // runs these functions when the page loads
+    // todo: fix when user reloads the page, the options disappear
     useEffect(() => {
+        getSelectOptions();
+
+        if(!hotelSelect.length) {
+            setHotelSelect(hotelsArray);
+        }
+
         getUserData();
     }, [])
 
+    // handles submit
     const handleSubmit = () => {
-        console.log(reservationData)
-
+        // selects every element with the class required
         const required_fields = [...document.querySelectorAll('.required')];
 
         let canBeSubmitted = true;
 
+        // for each element, it checks if there is a value
+        // if not, the border will become red
+        // todo: let there be a error message 
         for (let item of required_fields) {
             if(!item.value) {
                 const errorMessage = document.createElement("p");
@@ -60,11 +103,13 @@ const Reservations = () => {
             }
         }
 
+        // if not the checkbox is checked then it cant send
         if(!reservationData.accept){
             canBeSubmitted = false;
             return
         }
 
+        // sends the reservation
         if(canBeSubmitted) {
             const getUserId = JSON.parse(sessionStorage.getItem('token'));
             reservationData.userId = getUserId.user_id;
@@ -94,6 +139,7 @@ const Reservations = () => {
         }
     }
 
+    // removes the red border for every element
     const resetErrorMessage = () => {
         const required_fields = [...document.querySelectorAll('.required')];
         required_fields.forEach(element => element.style.border = 'none');
@@ -109,7 +155,13 @@ const Reservations = () => {
                 <div className={Style.reservations_formGroup}>
                     <select className={`${Style.fullWidth} ${Style.reservations_input} required`} onClick={resetErrorMessage} onChange={(e) => {reservationData.destination = e.target.value}}>
                         <option value="" selected disabled>Vælg destination & hotel</option>
-                        <option value="1">1</option>
+                        <optgroup label="Danmark">
+                            {hotelSelect && hotelSelect.map((item, index) => {
+                                return (
+                                    <option key={item.val} value={item.val}>{item.print}</option>
+                                )
+                            })}
+                        </optgroup>
                     </select>
                 </div>
 
@@ -164,7 +216,7 @@ const Reservations = () => {
 
                 <div className={Style.reservations_formGroup}>
                     <button className={`${Style.halfWidth} ${Style.reservations_button}`} type="button" onClick={handleSubmit}>Send reservation</button>
-                    <button className={`${Style.halfWidth} ${Style.reservations_button}`} type="button" onClick={(e) => {console.log(reservationData)}}>Annuller</button>
+                    <button className={`${Style.halfWidth} ${Style.reservations_button}`} type="button" onClick={(e) => {history.go(0)}}>Annuller</button>
                 </div>
             </form>
         </section>
