@@ -9,9 +9,6 @@ const Reservations = () => {
 
     const [hotelSelect, setHotelSelect] = useState([]);
 
-    // array of options for the first select
-    let hotelsArray = [];
-
     // reservation data
     const reservationData = {
         userId: null,
@@ -51,12 +48,15 @@ const Reservations = () => {
     const getSelectOptions = async () => {
         const url_city = `https://api.mediehuset.net/overlook/cities/by_country/${1}`;
 
+        // array of options for the first select
+        let hotelsArray = [];
+
         const response_city = await doFetch(url_city);
 
         for(let city of response_city) {
             const getHotels = async () => {
-                const url_hotel = `https://api.mediehuset.net/overlook/hotels/by_city/${city.id}`;
-                const response_hotel = await doFetch(url_hotel);
+                // const url_hotel = `https://api.mediehuset.net/overlook/hotels/by_city/${city.id}`;
+                const response_hotel = await doFetch(city.request);
 
                 for(let hotel of response_hotel) {
                     let obj = { print: `${city.name} - ${hotel.title}`, val: hotel.id }
@@ -67,17 +67,16 @@ const Reservations = () => {
 
             getHotels();
         }
+
+        if(!hotelSelect.length) {
+            setHotelSelect(hotelsArray);
+        }
     }
 
     // runs these functions when the page loads
     // todo: fix when user reloads the page, the options disappear
     useEffect(() => {
         getSelectOptions();
-
-        if(!hotelSelect.length) {
-            setHotelSelect(hotelsArray);
-        }
-
         getUserData();
     }, [])
 
@@ -158,7 +157,7 @@ const Reservations = () => {
                         <optgroup label="Danmark">
                             {hotelSelect && hotelSelect.map((item, index) => {
                                 return (
-                                    <option key={item.val} value={item.val}>{item.print}</option>
+                                    <option key={index} value={item.val}>{item.print}</option>
                                 )
                             })}
                         </optgroup>
