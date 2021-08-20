@@ -110,20 +110,53 @@ const Reservations = () => {
         const required_fields = [...document.querySelectorAll('.required')];
 
         let canBeSubmitted = true;
+        let errorMessage = '';
+
+        
 
         // for each element, it checks if there is a value
         // if not, the border will become red
         // todo: let there be a error message 
         for (let item of required_fields) {
             if(!item.value) {
-                const errorMessage = document.createElement("p");
-                item.appendChild(errorMessage)
-                errorMessage.innerHTML = 'heeey';
+                errorMessage = 'Du skal udfylde feltet';
+                item.insertAdjacentHTML('afterend', `<p class="errorText">${errorMessage}</p>`);
                 item.style.border = '1px solid red';
 
-                canBeSubmitted = false
+                canBeSubmitted = false;
                 return
+            } else {
+                switch(item.dataset.type) {
+                    default:
+                        break;
+                    case 'string':
+                        if(!isString(item.value)) {
+                            item.style.border = '1px solid red';
+                            canBeSubmitted = false;
+                            errorMessage = 'Feltet må kun indeholde bogstaver';
+                            return
+                        }
+                        break;
+                    case 'number':
+                        if(!isNumber(item.value)) {
+                            item.style.border = '1px solid red';
+                            canBeSubmitted = false;
+                            errorMessage = 'Feltet må kun indeholde tal';
+                            return
+                        }
+                        break;
+                    case 'email':
+                        if(!isEmail(item.value)) {
+                            item.style.border = '1px solid red';
+                            canBeSubmitted = false;
+                            errorMessage = 'Feltet skal indeholde en mail';
+                            return
+                        }
+                        break;    
+                }
             }
+
+
         }
 
         // if not the checkbox is checked then it cant send
@@ -162,10 +195,35 @@ const Reservations = () => {
         }
     }
 
+    // patterns for validation
+    // For: only letters
+    const isNumber = (val) => {
+        let pattern = /^[0-9]+$/;
+        return pattern.test(val);
+    }
+
+    // For: only numbers
+    const isString = (val) => {
+        let pattern = /^[A-ZÆØÅa-zæøå ]+$/;
+        return pattern.test(val);
+    }
+
+    // For: email
+    const isEmail = (val) => {
+        let pattern = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        return pattern.test(val);
+    }
+
     // removes the red border for every element
     const resetErrorMessage = () => {
         const required_fields = [...document.querySelectorAll('.required')];
         required_fields.forEach(element => element.style.border = 'none');
+
+        const errorText = document.querySelector('.errorText');
+
+        if(errorText) {
+            errorText.remove();
+        }
     };
 
     return (
@@ -224,16 +282,16 @@ const Reservations = () => {
                 </div>
 
                 <div className={Style.reservations_formGroup}>
-                    <input className={`${Style.fullWidth} ${Style.reservations_input} required`} type="text" placeholder="Fornavn" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.firstName = e.target.value}}/>
+                    <input className={`${Style.fullWidth} ${Style.reservations_input} required`} type="text" data-type="string" placeholder="Fornavn" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.firstName = e.target.value}}/>
                 </div>
                 
                 <div className={Style.reservations_formGroup}>
-                    <input className={`${Style.fullWidth} ${Style.reservations_input} required`} type="text" placeholder="Efternavn(e)" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.lastName = e.target.value}}/>
+                    <input className={`${Style.fullWidth} ${Style.reservations_input} required`} type="text" data-type="string" placeholder="Efternavn(e)" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.lastName = e.target.value}}/>
                 </div>
 
                 <div className={Style.reservations_formGroup}>
-                    <input className={`${Style.halfWidth} ${Style.reservations_input} required`} type="text" placeholder="Email" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.mail = e.target.value}}/>
-                    <input className={`${Style.halfWidth} ${Style.reservations_input} required`} type="text" placeholder="Telefon" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.phone = e.target.value}}/>
+                    <input className={`${Style.halfWidth} ${Style.reservations_input} required`} type="text" data-type="email" placeholder="Email" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.mail = e.target.value}}/>
+                    <input className={`${Style.halfWidth} ${Style.reservations_input} required`} type="text" data-type="number" placeholder="Telefon" onClick={resetErrorMessage} onKeyUp={(e) => {reservationData.phone = e.target.value}}/>
                 </div>
 
                 <div className={Style.reservations_formGroup}>

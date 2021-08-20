@@ -2,13 +2,61 @@ $laptop: 1200px;
 
 .pageFooter {
     width: 100%;
-    height: 10vh;
+    height: 35vh;
     background-color: white;
 
     display: flex;
     align-items: center;
-    flex-direction: row;
+    justify-content: center;
+    flex-direction: column;
     padding: 0 50px;
+
+    position: relative;
+
+    @media (min-width: $laptop) {
+        height: 10vh;
+        flex-direction: row;
+    }
+
+    .pageFooter_left { 
+        position: absolute; 
+        top: 20px;
+
+
+        @media (min-width: $laptop) {
+            left: 20px;
+            top: unset;
+        }
+    }
+
+    .pageFooter_center { 
+        position: absolute; 
+        width: fit-content; 
+        display: flex; 
+        flex-direction: row;
+
+        top: 65px;
+
+        @media (min-width: $laptop) {
+            top: unset;
+        }
+
+        & > p {
+            margin: 0 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    }
+    .pageFooter_right { 
+        position: absolute; 
+        bottom: 20px;
+        text-align: center;
+    
+        @media (min-width: $laptop) {
+            right: 20px;
+            bottom: unset;
+        }
+    }
 
     .pageFooter_nav {
         .pageFooter_ul {
