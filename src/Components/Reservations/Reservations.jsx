@@ -7,7 +7,8 @@ import { useState } from 'react';
 
 const Reservations = () => {
 
-    const [hotelSelect, setHotelSelect] = useState([]);
+    const [selectOptions, setSelectOptions] = useState([]);
+    const [roomsList, setRoomsList] = useState([]);
 
     // reservation data
     const reservationData = {
@@ -46,31 +47,48 @@ const Reservations = () => {
     // gets every city in denmark which has hotels, and then gets every hotel in that city
     // needs to be convertet to countrys also
     const getSelectOptions = async () => {
-        const url_city = `https://api.mediehuset.net/overlook/cities/by_country/${1}`;
+        let optionsArray = [];
 
-        // array of options for the first select
-        let hotelsArray = [];
+        const url_land = `https://api.mediehuset.net/overlook/countries`;
+        const response_land = await doFetch(url_land);
 
-        const response_city = await doFetch(url_city);
+        for (let land of response_land) {
+            const getCity = async () => {
+                const url_city = `https://api.mediehuset.net/overlook/cities/by_country/${land.id}`;
+                const response_city = await doFetch(url_city);
 
-        for(let city of response_city) {
-            const getHotels = async () => {
-                // const url_hotel = `https://api.mediehuset.net/overlook/hotels/by_city/${city.id}`;
-                const response_hotel = await doFetch(city.request);
+                let hotelsArray = []
 
-                for(let hotel of response_hotel) {
-                    let obj = { print: `${city.name} - ${hotel.title}`, val: hotel.id }
-                
-                    hotelsArray.push(obj);
+                for (let city of response_city) {
+                    const getHotel = async () => {
+                        const url_hotel = `https://api.mediehuset.net/overlook/hotels/by_city/${city.id}`;
+                        const response_hotel = await doFetch(url_hotel);
+
+                        for (let hotel of response_hotel) {
+                            hotelsArray.push({print: `${city.name} - ${hotel.title}`,val: hotel.id})
+                        }
+                    }
+                    getHotel();
                 }
-            };
 
-            getHotels();
+                optionsArray.push({
+                    name: land.name,
+                    hotels: hotelsArray,
+                })
+            }
+            getCity();
         }
 
-        if(!hotelSelect.length) {
-            setHotelSelect(hotelsArray);
-        }
+        setTimeout(() => {
+            setSelectOptions(optionsArray)
+        }, [500])
+
+    }
+
+    const changeRooms = async (id) => {
+        const url = `https://api.mediehuset.net/overlook/rooms/by_hotel/${id}`;
+        const response = await doFetch(url);
+        setRoomsList(response)
     }
 
     // runs these functions when the page loads
@@ -78,7 +96,13 @@ const Reservations = () => {
     useEffect(() => {
         getSelectOptions();
         getUserData();
-    }, [])
+    }, []);
+
+    const handleSelectChange = (val) => {
+        reservationData.destination = val;
+
+        changeRooms(val);
+    }
 
     // handles submit
     const handleSubmit = () => {
@@ -152,22 +176,30 @@ const Reservations = () => {
             </header>
             <form>
                 <div className={Style.reservations_formGroup}>
-                    <select className={`${Style.fullWidth} ${Style.reservations_input} required`} onClick={resetErrorMessage} onChange={(e) => {reservationData.destination = e.target.value}}>
+                    <select className={`${Style.fullWidth} ${Style.reservations_input} required`} onClick={resetErrorMessage} onChange={(e) => {handleSelectChange(e.target.value)}}>
                         <option value="" selected disabled>Vælg destination & hotel</option>
-                        <optgroup label="Danmark">
-                            {hotelSelect && hotelSelect.map((item, index) => {
-                                return (
-                                    <option key={index} value={item.val}>{item.print}</option>
-                                )
-                            })}
-                        </optgroup>
+                        {selectOptions.length && selectOptions.map((item, index) => {
+                            return (
+                                <optgroup key={index} label={item.name}>
+                                    {item.hotels.map((hotel, index) => {
+                                        return (
+                                            <option key={index} value={hotel.val}>{hotel.print}</option>
+                                        )
+                                    })}
+                                </optgroup>
+                            )
+                        })}
                     </select>
                 </div>
 
                 <div className={Style.reservations_formGroup}>
                     <select className={`${Style.halfWidth} ${Style.reservations_input} required`} onClick={resetErrorMessage} onChange={(e) => {reservationData.room = e.target.value}}>
                         <option value="" selected disabled>Vælg værelsestype</option>
-                        <option value="1">1</option>
+                        {roomsList.length && roomsList.map((item, index) => {
+                            return (
+                                <option key={index} value={item.id}>{item.room_title}</option>
+                            )
+                        })}
                     </select>
 
                     <select className={`${Style.halfWidth} ${Style.reservations_input} required`} onClick={resetErrorMessage} onChange={(e) => {reservationData.number = e.target.value}}>
